@@ -35,4 +35,7 @@ def create_app(test_config=None):
 
     app.add_url_rule("/", endpoint="index")
 
+    from . import calculos
+    app.register_blueprint(calculos.bp)
+
     return app

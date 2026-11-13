@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}Painel de Cálculos{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+    <h2>IRPF</h2>
+
+    <form method="post">
+        <input type="hidden" name="acao" value="irpf">
+
+        <label for="salario_bruto">Salário bruto (R$)</label>
+        <input name="salario_bruto" id="salario_bruto" required>
+
+        <input type="submit" value="Calcular IRPF">
+    </form>
+
+    {% if erro_irpf %}
+        <p>{{ erro_irpf }}</p>
+    {% endif %}
+
+    {% if irpf %}
+        <ul>
+            <li>Alíquota da faixa: {{ '%.1f'|format(irpf.aliquota) }}%</li>
+
+            <li>Imposto pela tabela: R$ {{ '%.2f'|format(irpf.imposto_tabela) }}</li>
+
+            <li>Redução aplicada: R$ {{ '%.2f'|format(irpf.reducao) }}</li>
+
+            <li>
+                <strong>
+                    Desconto estimado: R$ {{ '%.2f'|format(irpf.imposto) }}
+                </strong>
+            </li>
+
+            <li>Salário após IR: R$ {{ '%.2f'|format(irpf.salario_liquido) }}</li>
+        </ul>
+    {% endif %}
+
+    <hr>
+
+    <h2>Rescisão: 13º proporcional</h2>
+
+    <form method="post">
+        <input type="hidden" name="acao" value="rescisao">
+
+        <label for="salario_base">Salário base (R$)</label>
+        <input name="salario_base" id="salario_base" required>
+
+        <label for="meses">Meses trabalhados (1 a 12)</label>
+        <input type="number" name="meses" id="meses" min="1" max="12" required>
+
+        <input type="submit" value="Calcular 13º">
+    </form>
+
+    {% if erro_13 %}
+        <p>{{ erro_13 }}</p>
+    {% endif %}
+
+    {% if decimo %}
+        <ul>
+            <li>
+                Valor por mês trabalhado: R$ {{ '%.2f'|format(decimo.valor_mensal) }}
+            </li>
+
+            <li>
+                <strong>
+                    13º proporcional: R$ {{ '%.2f'|format(decimo.decimo_terceiro) }}
+                </strong>
+            </li>
+        </ul>
+    {% endif %}
+
+{% endblock %}
