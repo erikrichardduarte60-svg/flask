@@ -1,76 +1,94 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <h1>{% block title %}Painel de Cálculos{% endblock %}</h1>
+    <h1 class="h2 mb-4">{% block title %}Painel de Cálculos{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-
-    <h2>IRPF</h2>
-
-    <form method="post">
-        <input type="hidden" name="acao" value="irpf">
-
-        <label for="salario_bruto">Salário bruto (R$)</label>
-        <input name="salario_bruto" id="salario_bruto" required>
-
-        <input type="submit" value="Calcular IRPF">
-    </form>
-
-    {% if erro_irpf %}
-        <p>{{ erro_irpf }}</p>
-    {% endif %}
-
-    {% if irpf %}
-        <ul>
-            <li>Alíquota da faixa: {{ '%.1f'|format(irpf.aliquota) }}%</li>
-
-            <li>Imposto pela tabela: R$ {{ '%.2f'|format(irpf.imposto_tabela) }}</li>
-
-            <li>Redução aplicada: R$ {{ '%.2f'|format(irpf.reducao) }}</li>
-
-            <li>
-                <strong>
-                    Desconto estimado: R$ {{ '%.2f'|format(irpf.imposto) }}
-                </strong>
-            </li>
-
-            <li>Salário após IR: R$ {{ '%.2f'|format(irpf.salario_liquido) }}</li>
-        </ul>
-    {% endif %}
-
-    <hr>
-
-    <h2>Rescisão: 13º proporcional</h2>
-
-    <form method="post">
-        <input type="hidden" name="acao" value="rescisao">
-
-        <label for="salario_base">Salário base (R$)</label>
-        <input name="salario_base" id="salario_base" required>
-
-        <label for="meses">Meses trabalhados (1 a 12)</label>
-        <input type="number" name="meses" id="meses" min="1" max="12" required>
-
-        <input type="submit" value="Calcular 13º">
-    </form>
-
-    {% if erro_13 %}
-        <p>{{ erro_13 }}</p>
-    {% endif %}
-
-    {% if decimo %}
-        <ul>
-            <li>
-                Valor por mês trabalhado: R$ {{ '%.2f'|format(decimo.valor_mensal) }}
-            </li>
-
-            <li>
-                <strong>
-                    13º proporcional: R$ {{ '%.2f'|format(decimo.decimo_terceiro) }}
-                </strong>
-            </li>
-        </ul>
-    {% endif %}
-
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">IRPF mensal</div>
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="acao" value="irpf">
+                        <div class="mb-3">
+                            <label for="salario_bruto" class="form-label">Salário bruto (R$)</label>
+                            <input name="salario_bruto" id="salario_bruto" class="form-control"
+                                inputmode="decimal" placeholder="Ex.: 5000,00" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Calcular IRPF</button>
+                    </form>
+                    {% if erro_irpf %}
+                        <div class="alert alert-danger mt-3 mb-0">{{ erro_irpf }}</div>
+                    {% endif %}
+                    {% if irpf %}
+                        <ul class="list-group list-group-flush mt-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Base de cálculo</span>
+                                <span>R$ {{ '%.2f'|format(irpf.base_calculo) }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Alíquota da faixa</span>
+                                <span>{{ '%.1f'|format(irpf.aliquota) }}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Imposto pela tabela</span>
+                                <span>R$ {{ '%.2f'|format(irpf.imposto_tabela) }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Redução aplicada</span>
+                                <span>R$ {{ '%.2f'|format(irpf.reducao) }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between fw-bold">
+                                <span>Desconto estimado</span>
+                                <span>R$ {{ '%.2f'|format(irpf.imposto) }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Salário após IR</span>
+                                <span>R$ {{ '%.2f'|format(irpf.salario_liquido) }}</span>
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">Rescisão: 13º proporcional</div>
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="acao" value="rescisao">
+                        <div class="mb-3">
+                            <label for="salario_base" class="form-label">Salário base (R$)</label>
+                            <input name="salario_base" id="salario_base" class="form-control"
+                                inputmode="decimal" placeholder="Ex.: 3000,00" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="meses" class="form-label">Meses trabalhados (1 a 12)</label>
+                            <input type="number" name="meses" id="meses" class="form-control"
+                                min="1" max="12" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Calcular 13º</button>
+                    </form>
+                    {% if erro_13 %}
+                        <div class="alert alert-danger mt-3 mb-0">{{ erro_13 }}</div>
+                    {% endif %}
+                    {% if decimo %}
+                        <ul class="list-group list-group-flush mt-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Valor por mês trabalhado</span>
+                                <span>R$ {{ '%.2f'|format(decimo.valor_mensal)
+                                }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between fw-bold">
+                                <span>13º proporcional</span>
+                                <span>R$ {{ '%.2f'|format(decimo.decimo_terceiro) }}</span>
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

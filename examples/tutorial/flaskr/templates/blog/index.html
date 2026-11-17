@@ -1,28 +1,44 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Posts{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('blog.create') }}">New</a>
-  {% endif %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">{% block title %}Posts{% endblock %}</h1>
+        {% if g.user %}
+            <a class="btn btn-primary" href="{{ url_for('blog.create') }}">+ Novo post</a>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block content %}
-  {% for post in posts %}
-    <article class="post">
-      <header>
-        <div>
-          <h1>{{ post['title'] }}</h1>
-          <div class="about">by {{ post.author.username }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+    {% if posts %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for post in posts %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        {% if post.imagem_post %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ post.imagem_post) }}"
+                                class="card-img-top" alt="Imagem do post {{ post.title }}"
+                                style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text text-break" style="white-space: pre-line;">{{ post.body }}</p>
+                        </div>
+                        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                por {{ post.author.username }}<br>
+                                {{ post.created.strftime('%d/%m/%Y') }}
+                            </small>
+                            {% if g.user and g.user.id == post.author_id %}
+                                <a class="btn btn-sm btn-outline-secondary"
+                                    href="{{ url_for('blog.update', id=post.id) }}">Editar</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        {% if g.user['id'] == post['author_id'] %}
-          <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
-        {% endif %}
-      </header>
-      <p class="body">{{ post['body'] }}</p>
-    </article>
-    {% if not loop.last %}
-      <hr>
+    {% else %}
+        <div class="alert alert-info">Nenhum post ainda. Seja o primeiro a publicar!</div>
     {% endif %}
-  {% endfor %}
 {% endblock %}
